@@ -1,4 +1,10 @@
+using Microsoft.EntityFrameworkCore;
+using marka_api.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultyConnection")));
 
 // Add services to the container.
 
