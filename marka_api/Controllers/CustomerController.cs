@@ -13,9 +13,10 @@ namespace marka_api.Controllers
         private readonly AppDbContext _context;
         private readonly ICustomerRepository _customerRepository;
 
-        public CustomerController(AppDbContext context)
+        public CustomerController(AppDbContext context, ICustomerRepository customerRepository)
         {
             _context = context;
+            _customerRepository = customerRepository;
         }
 
         [HttpGet]
