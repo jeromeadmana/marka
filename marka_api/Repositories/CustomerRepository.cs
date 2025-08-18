@@ -23,5 +23,11 @@ namespace marka_api.Repositories
         {
             return await _context.Customers.FirstOrDefaultAsync(c => c.id == id);
         }
-    }
+
+        public async Task<Customer> CreateCustomer(Customer customer)
+        {
+            _context.Customers.Add(customer);
+            await _context.SaveChangesAsync();
+            return customer;
+        }
 }

@@ -3,3 +3,6 @@
 ################################################################################
 
 /marka_api/.env
+/marka_api/.vs
+/marka_api/bin/Debug/net8.0
+/marka_api/obj

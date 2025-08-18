@@ -26,5 +26,16 @@ namespace marka_api.Controllers
 
             return customer.ToList();
         }
+
+        [HttpPost]
+        public async Task<ActionResult<Customer>> CreateCustomer(Customer customer)
+        {
+            if (customer == null)
+            {
+                return BadRequest("Customer cannot be null");
+            }
+            var createdCustomer = await _customerRepository.CreateCustomer(customer);
+            return CreatedAtAction(nameof(GetAllCustomers), new { id = createdCustomer.id }, createdCustomer);
+        }
     }
 }
