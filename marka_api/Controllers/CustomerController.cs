@@ -38,7 +38,7 @@ namespace marka_api.Controllers
             return CreatedAtAction(nameof(GetAllCustomers), new { id = createdCustomer.id }, createdCustomer);
         }
 
-        [HttpPatch("{id}")]
+        [HttpDelete("{id}")]
         public async Task<bool> DeleteCustomer(Guid id)
         {
             if (id == Guid.Empty)
