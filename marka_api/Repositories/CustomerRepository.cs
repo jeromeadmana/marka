@@ -30,4 +30,16 @@ namespace marka_api.Repositories
             await _context.SaveChangesAsync();
             return customer;
         }
-}
+
+        public async Task<bool> DeleteCustomer(Guid id)
+        {
+            var customer = await _context.Customers.FindAsync(id);
+            if (customer == null)
+            {
+                return false;
+            }
+            _context.Customers.Remove(customer);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+    }

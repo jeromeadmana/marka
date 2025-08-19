@@ -37,5 +37,15 @@ namespace marka_api.Controllers
             var createdCustomer = await _customerRepository.CreateCustomer(customer);
             return CreatedAtAction(nameof(GetAllCustomers), new { id = createdCustomer.id }, createdCustomer);
         }
+
+        [HttpPatch("{id}")]
+        public async Task<bool> DeleteCustomer(Guid id)
+        {
+            if (id == Guid.Empty)
+            {
+                return false;
+            }
+            return await _customerRepository.DeleteCustomer(id);
+        }
     }
 }
