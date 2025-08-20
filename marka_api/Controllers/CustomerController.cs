@@ -39,13 +39,21 @@ namespace marka_api.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<bool> DeleteCustomer(Guid id)
+        public async Task<IActionResult> DeleteCustomer(Guid id)
         {
             if (id == Guid.Empty)
             {
-                return false;
+                return BadRequest("Invalid customer ID.");
             }
-            return await _customerRepository.DeleteCustomer(id);
+
+            var result = await _customerRepository.DeleteCustomer(id);
+
+            if (!result)
+            {
+                return NotFound("Customer not found.");
+            }
+
+            return NoContent(); // 204 No Content for successful delete
         }
     }
 }

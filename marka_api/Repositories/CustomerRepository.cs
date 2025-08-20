@@ -10,7 +10,7 @@ namespace marka_api.Repositories
         private readonly AppDbContext _context;
 
         public CustomerRepository(AppDbContext context)
-        { 
+        {
             _context = context;
         }
 
@@ -38,8 +38,15 @@ namespace marka_api.Repositories
             {
                 return false;
             }
-            _context.Customers.Remove(customer);
+
+            // Soft delete instead of physical delete
+            customer.is_deleted = true;
+            customer.deleted_at = DateTime.UtcNow;
+            customer.deleted_by = /* current user's ID */ Guid.NewGuid(); // Replace with actual user context
+
+            _context.Customers.Update(customer);
             await _context.SaveChangesAsync();
             return true;
         }
     }
+}
