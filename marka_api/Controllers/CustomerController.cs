@@ -53,7 +53,7 @@ namespace marka_api.Controllers
                 return NotFound("Customer not found.");
             }
 
-            return NoContent(); // 204 No Content for successful delete
+            return NoContent();
         }
     }
 }
