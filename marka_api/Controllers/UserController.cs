@@ -37,6 +37,21 @@ namespace marka_api.Controllers
             return CreatedAtAction(nameof(GetAllUsers), new { id = createdUser.id }, createdUser);
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<User>> GetUserById(int id)
+        {
+            if (id <= 0)
+            {
+                return BadRequest("Invalid user ID.");
+            }
+            var user = await _userRepository.GetUserById(id);
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+            return user;
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
