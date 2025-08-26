@@ -3,11 +3,13 @@ using marka_api.Interfaces;
 using marka_api.Models;
 using marka_api.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace marka_api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CustomerController : ControllerBase
     {
         private readonly AppDbContext _context;
