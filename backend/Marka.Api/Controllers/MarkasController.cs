@@ -31,21 +31,22 @@ public class MarkasController : ControllerBase
         {
             var userCustomerId = User.FindFirst("CustomerId")?.Value;
 
-            var query = _context.Markas
-                .Include(m => m.Customer)
-                .Include(m => m.CreatedBy)
-                .Include(m => m.AttributeValues)
-                    .ThenInclude(av => av.Attribute);
+            var query = _context.Markas.AsQueryable();
 
             // Filter by customer for non-SuperAdmin users
             var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
             if (userRole != "SuperAdmin" && !string.IsNullOrEmpty(userCustomerId))
             {
                 var customerId = Guid.Parse(userCustomerId);
-                query = (Microsoft.EntityFrameworkCore.Query.IIncludableQueryable<MarkaEntity, MarkaAttribute>)query.Where(m => m.CustomerId == customerId);
+                query = query.Where(m => m.CustomerId == customerId);
             }
 
-            var markas = await query.ToListAsync();
+            var markas = await query
+                .Include(m => m.Customer)
+                .Include(m => m.CreatedBy)
+                .Include(m => m.AttributeValues)
+                    .ThenInclude(av => av.Attribute)
+                .ToListAsync();
 
             return Ok(markas);
         }
