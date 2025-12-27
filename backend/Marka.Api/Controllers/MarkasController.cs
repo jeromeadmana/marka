@@ -1,8 +1,10 @@
+using Marka.Api.Authorization;
 using Marka.Api.Data;
 using Marka.Api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Marka.Api.Controllers;
 
@@ -22,16 +24,28 @@ public class MarkasController : ControllerBase
 
     // GET: api/markas
     [HttpGet]
+    [RequirePermission(PermissionCodes.MarkaView)]
     public async Task<ActionResult<IEnumerable<MarkaEntity>>> GetMarkas()
     {
         try
         {
-            var markas = await _context.Markas
+            var userCustomerId = User.FindFirst("CustomerId")?.Value;
+
+            var query = _context.Markas
                 .Include(m => m.Customer)
                 .Include(m => m.CreatedBy)
                 .Include(m => m.AttributeValues)
-                    .ThenInclude(av => av.Attribute)
-                .ToListAsync();
+                    .ThenInclude(av => av.Attribute);
+
+            // Filter by customer for non-SuperAdmin users
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            if (userRole != "SuperAdmin" && !string.IsNullOrEmpty(userCustomerId))
+            {
+                var customerId = Guid.Parse(userCustomerId);
+                query = (Microsoft.EntityFrameworkCore.Query.IIncludableQueryable<MarkaEntity, MarkaAttribute>)query.Where(m => m.CustomerId == customerId);
+            }
+
+            var markas = await query.ToListAsync();
 
             return Ok(markas);
         }
@@ -44,6 +58,7 @@ public class MarkasController : ControllerBase
 
     // GET: api/markas/{id}
     [HttpGet("{id}")]
+    [RequirePermission(PermissionCodes.MarkaView)]
     public async Task<ActionResult<MarkaEntity>> GetMarka(Guid id)
     {
         try
@@ -71,6 +86,7 @@ public class MarkasController : ControllerBase
 
     // POST: api/markas
     [HttpPost]
+    [RequirePermission(PermissionCodes.MarkaCreate)]
     public async Task<ActionResult<MarkaEntity>> CreateMarka(CreateMarkaDto dto)
     {
         try
@@ -107,6 +123,7 @@ public class MarkasController : ControllerBase
 
     // PUT: api/markas/{id}
     [HttpPut("{id}")]
+    [RequirePermission(PermissionCodes.MarkaEdit)]
     public async Task<IActionResult> UpdateMarka(Guid id, UpdateMarkaDto dto)
     {
         try
@@ -142,6 +159,7 @@ public class MarkasController : ControllerBase
 
     // DELETE: api/markas/{id}
     [HttpDelete("{id}")]
+    [RequirePermission(PermissionCodes.MarkaDelete)]
     public async Task<IActionResult> DeleteMarka(Guid id)
     {
         try
