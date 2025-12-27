@@ -1,8 +1,8 @@
 # Marka Project - Progress Report
 
-**Date:** December 27, 2025
-**Status:** Backend Core Complete - Permission System Implemented! 🎉
-**Phase:** Multi-Tenant Platform with Flexible Role System
+**Date:** December 28, 2025
+**Status:** Backend Core Complete - MarkaContext System Implemented! 🎉
+**Phase:** Multi-Tenant Platform with Flexible Role System + Predefined Marka Types
 
 ---
 
@@ -42,6 +42,30 @@
   - Assign specific permissions to each role
   - Users inherit permissions from their assigned role
   - Multi-platform access control (Web/Mobile)
+
+### MarkaContext System (Predefined Marka Types) **NEW!**
+- [x] **MarkaContext** - Customer-specific marka types/kinds:
+  - Define types like "Fire Hydrant", "Street Sign", "Utility Pole"
+  - Each type has icon, color, default radius
+  - Customer-isolated (each customer defines their own types)
+  - Soft delete support
+
+- [x] **AttributeSet** - Reusable attribute collections:
+  - Group attributes into sets (e.g., "Utility Pole Fields", "Inspection Attributes")
+  - Customer-specific attribute sets
+  - Can be applied to multiple marka contexts
+
+- [x] **MarkaContextAttribute** - Links contexts to attributes:
+  - Define which attributes are available for each marka type
+  - Attribute ordering and display settings
+  - Required/readonly flags per context
+  - Featured attributes for list views
+
+- [x] **Enhanced MarkaAttribute** system:
+  - DefaultValue, ReadOnly, Persist, IsSystem flags
+  - CreatedBy/UpdatedBy tracking
+  - Soft delete support
+  - Reusable across contexts via linking tables
 
 ### Controllers & Endpoints
 
@@ -99,17 +123,22 @@
 - [x] **Core Tables:**
   - Customers (with contact info)
   - Users (with CustomRoleId)
-  - Markas (location pins)
+  - Markas (location pins with MarkaContextId)
   - Attributes, AttributeValues
   - Permissions (24 seeded)
   - CustomRoles (customer-specific)
   - RolePermissions (junction table)
+  - **MarkaContexts** (marka types/kinds) **NEW!**
+  - **AttributeSets** (reusable attribute collections) **NEW!**
+  - **MarkaContextAttributes** (links contexts to attributes) **NEW!**
+  - **AttributeSetAttributes** (links sets to attributes) **NEW!**
 
 - [x] **Migrations applied:**
   - Initial create
   - Add password to user
   - Update customer and user models (role enum)
   - Add permission system
+  - **Add MarkaContexts and AttributeSets** **NEW!**
 
 ### Frontend (React + TypeScript)
 - [x] React 18 + TypeScript with Vite
@@ -155,6 +184,8 @@
 ✅ Role management with permission assignment
 ✅ Marka CRUD with permission checks
 ✅ Customer data isolation
+✅ **MarkaContext system - predefined marka types** **NEW!**
+✅ **AttributeSet system - reusable attribute groups** **NEW!**
 ✅ Frontend with Google Maps
 ✅ Clean git history (no AI contributor)
 
@@ -200,7 +231,11 @@ marka/
 │       │   ├── RolePermission.cs ✓
 │       │   ├── MarkaEntity.cs ✓
 │       │   ├── MarkaAttribute.cs ✓
-│       │   └── AttributeValue.cs ✓
+│       │   ├── AttributeValue.cs ✓
+│       │   ├── MarkaContext.cs ✓ **NEW!**
+│       │   ├── MarkaContextAttribute.cs ✓ **NEW!**
+│       │   ├── AttributeSet.cs ✓ **NEW!**
+│       │   └── AttributeSetAttribute.cs ✓ **NEW!**
 │       ├── Services/
 │       │   ├── ITokenService.cs ✓
 │       │   ├── TokenService.cs ✓
@@ -238,6 +273,27 @@ marka/
 ---
 
 ## 🎯 Next Steps
+
+### Phase 0: MarkaContext & AttributeSet Controllers **IMMEDIATE**
+**Priority:** Critical | **Effort:** 1-2 hours
+**Status:** Models created, need API endpoints
+
+1. **MarkaContexts Controller**
+   - CRUD operations for marka types/contexts
+   - Customer isolation (users only see their customer's contexts)
+   - Permission checks (Context.View, Context.Create, etc.)
+   - Link/unlink attributes to contexts
+
+2. **AttributeSets Controller**
+   - CRUD operations for attribute sets
+   - Customer isolation
+   - Add/remove attributes from sets
+   - Apply sets to contexts
+
+3. **Attributes Controller** (Enhanced)
+   - Update existing attributes CRUD
+   - Support for new fields (DefaultValue, ReadOnly, Persist)
+   - Customer isolation
 
 ### Phase 1: Complete Admin Dashboard (Frontend)
 **Priority:** High | **Effort:** 2-3 days
@@ -388,6 +444,38 @@ User
 - "Field Agent" → Access.Mobile only (mobile workers)
 - "Dispatcher" → Access.Web only (office staff)
 - "Manager" → Access.Web + Access.Mobile (both platforms)
+
+### MarkaContext System Design **NEW!**
+
+**Decision:** Customer-specific predefined marka types based on nrby2 architecture
+
+**Why:**
+- Different customers track different types of assets (fire hydrants, street signs, utility poles)
+- Each type needs specific attributes (e.g., fire hydrants need flow rate, pressure)
+- Predefined contexts ensure data consistency
+- Attributes can be reused across multiple contexts via AttributeSets
+
+**Implementation:**
+```
+Customer
+  └─ MarkaContext (e.g., "Fire Hydrant", "Street Sign")
+      └─ MarkaContextAttributes (links to specific attributes with ordering)
+          └─ MarkaAttribute (e.g., "Flow Rate", "Condition", "Install Date")
+
+  └─ AttributeSet (e.g., "Standard Utility Fields")
+      └─ AttributeSetAttributes (collection of reusable attributes)
+          └─ MarkaAttribute (can be shared across multiple sets)
+
+Marka (Pin on Map)
+  └─ MarkaContextId → Determines which type of pin
+  └─ AttributeValues → Actual field values for this pin
+```
+
+**Benefits:**
+- Each customer defines their own marka types and attributes
+- Attributes are customer-isolated (not shared between customers)
+- Flexible attribute ordering and display settings per context
+- Reusable attribute collections via AttributeSets
 
 ### Customer Isolation
 
