@@ -14,6 +14,10 @@ public class MarkaEntity
     public string? Category { get; set; }
     public string Status { get; set; } = "Active"; // Active, Inactive, Pending, Archived
 
+    // Marka Type/Context
+    public Guid? MarkaContextId { get; set; }
+    public MarkaContext? MarkaContext { get; set; }
+
     public Guid CustomerId { get; set; }
     public Customer? Customer { get; set; }
 

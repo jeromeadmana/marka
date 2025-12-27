@@ -18,6 +18,10 @@ public class AppDbContext : DbContext
     public DbSet<Permission> Permissions { get; set; }
     public DbSet<CustomRole> CustomRoles { get; set; }
     public DbSet<RolePermission> RolePermissions { get; set; }
+    public DbSet<MarkaContext> MarkaContexts { get; set; }
+    public DbSet<MarkaContextAttribute> MarkaContextAttributes { get; set; }
+    public DbSet<AttributeSet> AttributeSets { get; set; }
+    public DbSet<AttributeSetAttribute> AttributeSetAttributes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -86,6 +90,11 @@ public class AppDbContext : DbContext
                 .WithMany()
                 .HasForeignKey(e => e.CreatedByUserId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(e => e.MarkaContext)
+                .WithMany(mc => mc.Markas)
+                .HasForeignKey(e => e.MarkaContextId)
+                .OnDelete(DeleteBehavior.SetNull);
         });
 
         // Attribute configuration
@@ -102,6 +111,18 @@ public class AppDbContext : DbContext
                 .WithMany()
                 .HasForeignKey(e => e.CustomerId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(e => e.CreatedByUser)
+                .WithMany()
+                .HasForeignKey(e => e.CreatedBy)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(e => e.UpdatedByUser)
+                .WithMany()
+                .HasForeignKey(e => e.UpdatedBy)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasQueryFilter(e => !e.IsDeleted);
         });
 
         // AttributeValue configuration
@@ -163,6 +184,94 @@ public class AppDbContext : DbContext
             entity.HasOne(e => e.Permission)
                 .WithMany(p => p.RolePermissions)
                 .HasForeignKey(e => e.PermissionId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // MarkaContext configuration
+        modelBuilder.Entity<MarkaContext>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(255);
+            entity.Property(e => e.Icon).HasMaxLength(255);
+            entity.Property(e => e.Color).HasMaxLength(20);
+            entity.HasIndex(e => new { e.CustomerId, e.Name });
+
+            entity.HasOne(e => e.Customer)
+                .WithMany()
+                .HasForeignKey(e => e.CustomerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(e => e.CreatedByUser)
+                .WithMany()
+                .HasForeignKey(e => e.CreatedBy)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(e => e.UpdatedByUser)
+                .WithMany()
+                .HasForeignKey(e => e.UpdatedBy)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasQueryFilter(e => !e.IsDeleted);
+        });
+
+        // MarkaContextAttribute configuration
+        modelBuilder.Entity<MarkaContextAttribute>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => new { e.MarkaContextId, e.MarkaAttributeId }).IsUnique();
+            entity.HasIndex(e => new { e.MarkaContextId, e.AttributeOrder });
+
+            entity.HasOne(e => e.MarkaContext)
+                .WithMany(mc => mc.MarkaContextAttributes)
+                .HasForeignKey(e => e.MarkaContextId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.MarkaAttribute)
+                .WithMany(a => a.MarkaContextAttributes)
+                .HasForeignKey(e => e.MarkaAttributeId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // AttributeSet configuration
+        modelBuilder.Entity<AttributeSet>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(255);
+            entity.HasIndex(e => new { e.CustomerId, e.Name });
+
+            entity.HasOne(e => e.Customer)
+                .WithMany()
+                .HasForeignKey(e => e.CustomerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(e => e.CreatedByUser)
+                .WithMany()
+                .HasForeignKey(e => e.CreatedBy)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(e => e.UpdatedByUser)
+                .WithMany()
+                .HasForeignKey(e => e.UpdatedBy)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasQueryFilter(e => !e.IsDeleted);
+        });
+
+        // AttributeSetAttribute configuration
+        modelBuilder.Entity<AttributeSetAttribute>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => new { e.AttributeSetId, e.MarkaAttributeId }).IsUnique();
+            entity.HasIndex(e => new { e.AttributeSetId, e.AttributeOrder });
+
+            entity.HasOne(e => e.AttributeSet)
+                .WithMany(aset => aset.AttributeSetAttributes)
+                .HasForeignKey(e => e.AttributeSetId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.MarkaAttribute)
+                .WithMany(a => a.AttributeSetAttributes)
+                .HasForeignKey(e => e.MarkaAttributeId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
     }
