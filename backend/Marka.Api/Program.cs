@@ -14,6 +14,9 @@ builder.Services.AddControllers();
 // Register TokenService
 builder.Services.AddScoped<ITokenService, TokenService>();
 
+// Register PermissionService
+builder.Services.AddScoped<IPermissionService, PermissionService>();
+
 // Configure PostgreSQL
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
