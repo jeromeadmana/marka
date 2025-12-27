@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(dotnet:*)",
+      "Bash(node:*)",
+      "Bash(npm:*)",
+      "Bash(git --version:*)",
+      "Bash(docker --version:*)",
+      "Bash(timeout 10 dotnet run:*)",
+      "Bash(npx tailwindcss:*)",
+      "Bash(timeout 10 npm run dev:*)",
+      "Bash(taskkill:*)",
+      "Bash(git push:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(git pull:*)",
+      "Bash(git stash:*)",
+      "Bash(psql:*)",
+      "Bash(curl:*)",
+      "Bash(ls:*)",
+      "Bash(python -m json.tool:*)",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiMmMzZDRlNS1mNmE3LTRiOGMtOWQwZS0xZjJhM2I0YzVkNmUiLCJlbWFpbCI6ImFkbWluQG1hcmthLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlN1cGVyQWRtaW4iLCJDdXN0b21lcklkIjoiYTFiMmMzZDQtZTVmNi00YTdiLThjOWQtMGUxZjJhM2I0YzVkIiwianRpIjoiYmZkODlhZjMtN2MwNS00NjU4LTg1YWUtNGQ2NGMyYTZjNTI4IiwiZXhwIjoxNzY2NzEzMzI1LCJpc3MiOiJNYXJrYUFwaSIsImF1ZCI6Ik1hcmthQ2xpZW50In0.hD36oBRtJ-7DAfyRwv4JjH61yupXYDY2EcLPB824bFU\")",
+      "Bash(git show:*)",
+      "Bash(git rebase:*)"
+    ]
+  }
+}

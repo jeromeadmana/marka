@@ -1,0 +1,6 @@
+@Marka.Api_HostAddress = http://localhost:5229
+
+GET {{Marka.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
