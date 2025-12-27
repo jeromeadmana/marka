@@ -24,7 +24,9 @@
       "Bash(python -m json.tool:*)",
       "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiMmMzZDRlNS1mNmE3LTRiOGMtOWQwZS0xZjJhM2I0YzVkNmUiLCJlbWFpbCI6ImFkbWluQG1hcmthLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlN1cGVyQWRtaW4iLCJDdXN0b21lcklkIjoiYTFiMmMzZDQtZTVmNi00YTdiLThjOWQtMGUxZjJhM2I0YzVkIiwianRpIjoiYmZkODlhZjMtN2MwNS00NjU4LTg1YWUtNGQ2NGMyYTZjNTI4IiwiZXhwIjoxNzY2NzEzMzI1LCJpc3MiOiJNYXJrYUFwaSIsImF1ZCI6Ik1hcmthQ2xpZW50In0.hD36oBRtJ-7DAfyRwv4JjH61yupXYDY2EcLPB824bFU\")",
       "Bash(git show:*)",
-      "Bash(git rebase:*)"
+      "Bash(git rebase:*)",
+      "Bash(git branch:*)",
+      "Bash(git remote set-url:*)"
     ]
   }
 }
