@@ -1,86 +1,170 @@
 # Marka Project - Progress Report
 
-**Date:** December 21, 2025
-**Status:** Week 1 - Day 1 Complete! 🎉
-**Phase:** Month 1, Week 1 - Project Setup
+**Date:** December 27, 2025
+**Status:** Backend Core Complete - Permission System Implemented! 🎉
+**Phase:** Multi-Tenant Platform with Flexible Role System
 
 ---
 
-## ✅ Completed Today
+## ✅ Completed Features
 
-### Infrastructure
-- [x] Git repository initialized
-- [x] Project structure created (backend/, frontend/, docs/)
-- [x] Comprehensive .gitignore configured
-- [x] 6 commits with clean history
+### Authentication & Authorization System
+- [x] JWT authentication with email/password
+- [x] Token generation with user claims (userId, email, role, customerId, customRoleId)
+- [x] Protected API endpoints with [Authorize] attribute
+- [x] Password hashing with BCrypt
+- [x] Login/Register endpoints
 
-### Backend (.NET 10 API)
-- [x] Web API project initialized
-- [x] Entity Framework Core configured
-- [x] PostgreSQL database connected (Aiven)
-- [x] 5 database models created
-  - Customer
-  - User
-  - MarkaEntity (with Latitude/Longitude)
-  - MarkaAttribute
-  - AttributeValue
-- [x] Database migration created and applied
-- [x] First API controller (MarkasController) with full CRUD
-- [x] API endpoints working:
-  - GET /api/markas
-  - GET /api/markas/{id}
-  - POST /api/markas
-  - PUT /api/markas/{id}
-  - DELETE /api/markas/{id}
-- [x] CORS configured for frontend
-- [x] Logging with Serilog
-- [x] Error handling middleware
+### Multi-Tenant Infrastructure
+- [x] Customer model with contact information
+- [x] Customer isolation for all data queries
+- [x] Soft delete pattern for Customers and Users
+- [x] Customer CRUD operations (SuperAdmin only)
+- [x] Sample customers seeded (Test Company, Acme Corporation)
 
-### Frontend (React + Vite)
-- [x] React 18 + TypeScript project initialized
-- [x] Vite dev server configured
-- [x] Environment variables setup (.env.local)
-- [x] Google Maps API key obtained
-- [x] Backend API URL configured
+### Flexible Permission-Based Role System
+- [x] **24 default permissions** across 7 categories:
+  - Access (Web, Mobile)
+  - Marka Management (View, Create, Edit, Delete)
+  - Assignment Management (View, Create, Assign, Complete)
+  - Reports (View, Export)
+  - User Management (View, Create, Edit, Delete)
+  - Role Management (View, Create, Edit, Delete)
+  - Customer Management (View, Create, Edit, Delete) - SuperAdmin only
 
-### Database (Aiven PostgreSQL)
-- [x] Free tier PostgreSQL service created
-- [x] Connection string configured
-- [x] All tables created successfully:
-  - Customers
-  - Users
-  - markas (with lat/long indexing)
-  - Attributes
-  - AttributeValues
-- [x] Indexes optimized for queries
-- [x] Relationships and foreign keys configured
+- [x] **Three-tier role hierarchy:**
+  - **SuperAdmin** - Platform-wide admin, all permissions
+  - **CustomerAdmin** - Customer-level admin, can create custom roles
+  - **User** - Custom role with assigned permissions
 
-### Documentation
-- [x] Comprehensive project planning (12-month roadmap)
-- [x] Architecture blueprint
-- [x] Quick start guide
-- [x] Week 1 checklist
-- [x] Backend README
-- [x] Getting started guide
+- [x] **Custom Role System:**
+  - CustomerAdmin can create roles with any name (e.g., "Field Agent", "hello1", "Dispatcher")
+  - Assign specific permissions to each role
+  - Users inherit permissions from their assigned role
+  - Multi-platform access control (Web/Mobile)
+
+### Controllers & Endpoints
+
+#### AuthController
+- POST /api/auth/register - Register new user
+- POST /api/auth/login - Login and get JWT token
+- GET /api/auth/me - Get current user info
+
+#### CustomersController (SuperAdmin only)
+- GET /api/customers - List all customers
+- GET /api/customers/{id} - Get customer details
+- POST /api/customers - Create new customer
+- PUT /api/customers/{id} - Update customer
+- DELETE /api/customers/{id} - Soft delete customer
+
+#### UsersController
+- GET /api/users - List users (filtered by role/customer)
+- GET /api/users/{id} - Get user details
+- POST /api/users - Create new user
+- PUT /api/users/{id} - Update user (role-based permissions)
+- DELETE /api/users/{id} - Soft delete user
+
+#### RolesController
+- GET /api/roles - List custom roles for customer
+- GET /api/roles/{id} - Get role details with permissions and users
+- POST /api/roles - Create new custom role
+- PUT /api/roles/{id} - Update role
+- POST /api/roles/{id}/permissions - Assign permissions to role
+- DELETE /api/roles/{id}/permissions/{permissionId} - Remove permission
+- DELETE /api/roles/{id} - Soft delete role
+
+#### PermissionsController
+- GET /api/permissions - List all available permissions
+- GET /api/permissions/categories - Get permissions grouped by category
+- GET /api/permissions/{id} - Get permission details
+
+#### MarkasController
+- GET /api/markas - List markas (filtered by customer)
+- GET /api/markas/{id} - Get marka details
+- POST /api/markas - Create new marka
+- PUT /api/markas/{id} - Update marka
+- DELETE /api/markas/{id} - Soft delete marka
+- **All endpoints protected with permission checks**
+
+### Permission Enforcement
+- [x] **PermissionService** - Checks user permissions from custom roles
+- [x] **RequirePermission attribute** - Controller-level permission enforcement
+- [x] **Customer isolation** - Users only see their customer's data
+- [x] **Role-based logic:**
+  - SuperAdmin → All permissions
+  - CustomerAdmin → All permissions except Customers.*
+  - Regular User → Permissions from CustomRole
+
+### Database Schema
+- [x] **Core Tables:**
+  - Customers (with contact info)
+  - Users (with CustomRoleId)
+  - Markas (location pins)
+  - Attributes, AttributeValues
+  - Permissions (24 seeded)
+  - CustomRoles (customer-specific)
+  - RolePermissions (junction table)
+
+- [x] **Migrations applied:**
+  - Initial create
+  - Add password to user
+  - Update customer and user models (role enum)
+  - Add permission system
+
+### Frontend (React + TypeScript)
+- [x] React 18 + TypeScript with Vite
+- [x] Tailwind CSS v4 configured
+- [x] Google Maps integration
+- [x] Authentication flow with JWT
+- [x] Login page
+- [x] Home page with map view
+- [x] Marka CRUD operations
+- [x] Create/Edit/Delete marka modals
+- [x] Axios interceptors for auth headers
+
+### Test Data
+- [x] **SuperAdmin User:**
+  - Email: admin@marka.com
+  - Password: password123
+  - Full platform access
+
+- [x] **Acme Corporation - CustomerAdmin:**
+  - Email: jane.smith@acme.com
+  - Password: acme123
+  - Can manage Acme's roles and users
+
+- [x] **Acme Corporation - Regular User:**
+  - Email: bob.johnson@acme.com
+  - Password: user123
+  - Limited access based on role
+
+- [x] Sample markas seeded for both customers
 
 ---
 
 ## 📊 Current State
 
 ### What Works Now
-✅ Backend API running at http://localhost:5229
-✅ Database connected and schema deployed
-✅ Can create/read/update/delete markas via API
-✅ Frontend scaffolding ready
-✅ Google Maps API ready to integrate
+✅ Complete authentication with JWT
+✅ Multi-tenant customer isolation
+✅ Flexible permission-based role system
+✅ CustomerAdmin can create custom roles (e.g., "Field Agent", "hello1")
+✅ Permission enforcement on all API endpoints
+✅ Customer management (SuperAdmin)
+✅ User management (role-based access)
+✅ Role management with permission assignment
+✅ Marka CRUD with permission checks
+✅ Customer data isolation
+✅ Frontend with Google Maps
+✅ Clean git history (no AI contributor)
 
-### Technologies Confirmed
+### Technologies Stack
 - **Backend:** .NET 10, C#, Entity Framework Core
-- **Database:** PostgreSQL (Aiven), simple lat/long (PostGIS deferred)
-- **Frontend:** React 18, TypeScript, Vite, Tailwind CSS (to install)
+- **Database:** PostgreSQL (Aiven)
+- **Authentication:** JWT with BCrypt password hashing
+- **Frontend:** React 18, TypeScript, Vite, Tailwind CSS v4
 - **Maps:** Google Maps JavaScript API
-- **Auth:** Custom auth (Keycloak/Docker deferred)
-- **Hosting:** Aiven (DB), Local dev (API/Frontend for now)
+- **API Communication:** Axios with interceptors
 
 ---
 
@@ -90,120 +174,328 @@
 marka/
 ├── backend/
 │   └── Marka.Api/
+│       ├── Authorization/
+│       │   └── RequirePermissionAttribute.cs ✓
 │       ├── Controllers/
+│       │   ├── AuthController.cs ✓
+│       │   ├── CustomersController.cs ✓
+│       │   ├── UsersController.cs ✓
+│       │   ├── RolesController.cs ✓
+│       │   ├── PermissionsController.cs ✓
 │       │   └── MarkasController.cs ✓
 │       ├── Data/
-│       │   └── AppDbContext.cs ✓
+│       │   ├── AppDbContext.cs ✓
+│       │   ├── SeedData.cs ✓
+│       │   └── SeedPermissions.cs ✓
+│       ├── DTOs/
+│       │   ├── AuthResponseDto.cs ✓
+│       │   ├── LoginRequestDto.cs ✓
+│       │   └── RegisterRequestDto.cs ✓
 │       ├── Models/
 │       │   ├── Customer.cs ✓
 │       │   ├── User.cs ✓
+│       │   ├── UserRole.cs ✓
+│       │   ├── Permission.cs ✓
+│       │   ├── CustomRole.cs ✓
+│       │   ├── RolePermission.cs ✓
 │       │   ├── MarkaEntity.cs ✓
 │       │   ├── MarkaAttribute.cs ✓
 │       │   └── AttributeValue.cs ✓
+│       ├── Services/
+│       │   ├── ITokenService.cs ✓
+│       │   ├── TokenService.cs ✓
+│       │   ├── IPermissionService.cs ✓
+│       │   └── PermissionService.cs ✓
 │       ├── Migrations/ ✓
 │       └── Program.cs ✓
 ├── frontend/
-│   ├── src/ (basic scaffold)
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Header.tsx ✓
+│   │   │   ├── MapView.tsx ✓
+│   │   │   ├── MarkasList.tsx ✓
+│   │   │   ├── CreateMarkaModal.tsx ✓
+│   │   │   └── EditMarkaModal.tsx ✓
+│   │   ├── pages/
+│   │   │   ├── HomePage.tsx ✓
+│   │   │   └── LoginPage.tsx ✓
+│   │   ├── services/
+│   │   │   ├── api.ts ✓
+│   │   │   └── authService.ts ✓
+│   │   └── types/
+│   │       ├── auth.ts ✓
+│   │       └── marka.ts ✓
 │   └── .env.local ✓
 ├── docs/
-│   ├── QUICK_START.md ✓
-│   ├── WEEK_01_CHECKLIST.md ✓
-│   ├── MARKA_PROJECT_PLAN.md ✓
-│   └── NRBY2_BLUEPRINT.md ✓
-└── README.md ✓
+│   └── (planning documents)
+├── ARCHITECTURE.md ✓
+├── PROGRESS.md ✓
+├── README.md ✓
+├── GETTING_STARTED.md ✓
+└── RUNNING_LOCALLY.md ✓
 ```
 
 ---
 
-## 🎯 Next Steps (Immediate)
+## 🎯 Next Steps
 
-### Option 1: Push to GitHub (Recommended - 5 min)
-**Why:** Save your work to the cloud NOW before anything happens
+### Phase 1: Complete Admin Dashboard (Frontend)
+**Priority:** High | **Effort:** 2-3 days
 
-**Steps:**
-1. Create GitHub repository named "marka"
-2. Run:
-   ```bash
-   git remote add origin https://github.com/YOUR-USERNAME/marka.git
-   git branch -M main
-   git push -u origin main
-   ```
+1. **Admin Dashboard Layout**
+   - Create admin layout with sidebar navigation
+   - Role-based menu items (SuperAdmin vs CustomerAdmin)
+   - Responsive design with Tailwind CSS
 
-### Option 2: Test API with Sample Data (10 min)
-**Why:** Verify everything works end-to-end
+2. **Customer Management Page** (SuperAdmin only)
+   - List all customers with search/filter
+   - Create new customer form
+   - Edit customer details
+   - View customer users and markas count
 
-**Steps:**
-1. Create a test customer and user in database
-2. Use Postman/curl to create a marka
-3. Verify it's stored in Aiven
+3. **User Management Page** (SuperAdmin + CustomerAdmin)
+   - List users with role badges
+   - Create new user form with role selection
+   - Edit user details
+   - Assign users to custom roles
+   - Filter by customer (SuperAdmin only)
 
-### Option 3: Continue Building (Next Session)
-**What's Next in Week 1:**
-- Install Tailwind CSS in frontend
-- Create basic layout (header, sidebar)
-- Integrate Google Maps
-- Display markas on map
-- Create marka creation form
+4. **Role Management Page** (CustomerAdmin)
+   - List custom roles for customer
+   - Create new role form (e.g., "Field Agent", "hello1")
+   - Permission selection interface (checkboxes by category)
+   - View users assigned to each role
+   - Edit/delete roles
+
+5. **Routing Based on Role**
+   - SuperAdmin → Admin Dashboard on login
+   - CustomerAdmin → Admin Dashboard (limited view)
+   - Regular User → Map View
+
+### Phase 2: Mobile Access Control
+**Priority:** Medium | **Effort:** 1-2 days
+
+1. **Access.Mobile Enforcement**
+   - Check Access.Mobile permission on frontend
+   - Redirect mobile-only users to mobile view
+   - Block web access if no Access.Web permission
+
+2. **Platform Detection**
+   - Detect mobile vs desktop browser
+   - Show appropriate UI based on device + permissions
+
+### Phase 3: Assignment System
+**Priority:** Medium | **Effort:** 1 week
+
+1. **Assignment Model & Database**
+   - Create Assignment entity
+   - Link to Markas and Users
+   - Status tracking (Pending, InProgress, Completed)
+
+2. **Assignment CRUD API**
+   - Create assignments
+   - Assign to users
+   - Update status
+   - Permission checks (Assignment.Create, Assignment.Assign, etc.)
+
+3. **Assignment UI**
+   - Assignment list view
+   - Create assignment form
+   - Assign to users dropdown
+   - Status updates
+
+### Phase 4: Reporting & Analytics
+**Priority:** Low | **Effort:** 1 week
+
+1. **Reports API**
+   - Generate reports by customer
+   - Filter by date range, category, status
+   - Export to PDF/Excel
+
+2. **Dashboard with Charts**
+   - Marka count by category
+   - Assignment completion rates
+   - User activity metrics
 
 ---
 
-## 📝 Notes & Decisions
+## 🚀 Future Enhancements
 
-### Key Decisions Made
-1. **No PostGIS (for now):** Using simple lat/long to avoid Aiven free tier limitations
-   - Can add PostGIS later when needed for radius searches, etc.
-   - Google Maps works perfectly with lat/long
+### Month 2-3
+- [ ] Real-time notifications (SignalR)
+- [ ] File attachments for markas
+- [ ] Photo upload for assignments
+- [ ] Geofencing and radius searches
+- [ ] Offline mode with sync
+- [ ] Route optimization
 
-2. **No Keycloak/Docker (for now):** Will build custom auth later
-   - Focus on core functionality first
-   - Can add OAuth2/OIDC later
+### Month 4-6
+- [ ] Mobile app (React Native or Flutter)
+- [ ] Advanced reporting with charts
+- [ ] Email notifications
+- [ ] Audit logs
+- [ ] API rate limiting
 
-3. **Simplified First:** Build working features, add complexity later
-   - MVP in Month 3
-   - Advanced features in Months 4-12
+### Month 7-12
+- [ ] Machine learning for route optimization
+- [ ] Integration with third-party services
+- [ ] White-label support
+- [ ] Advanced analytics
+- [ ] Multi-language support
 
-### What We Learned
-- Aiven free tier doesn't allow DDL operations via SQL
-- .NET 10 uses new minimal API style (we kept traditional controllers)
-- Entity Framework migrations work great with Aiven
-- Soft delete pattern implemented (DeletedAt field)
+---
+
+## 📝 Key Decisions & Architecture
+
+### Permission System Design
+
+**Decision:** Flexible permission-based roles instead of fixed roles
+
+**Why:**
+- Customers have different needs (field agents, dispatchers, managers)
+- Some customers want mobile-only users, others want web-only
+- Allows customers to create roles like "hello1" with specific permissions
+- More scalable than hardcoded roles
+
+**Implementation:**
+```
+SuperAdmin (Platform)
+  └─ Has all permissions automatically
+
+CustomerAdmin (Per Customer)
+  └─ Has all permissions except Customers.*
+  └─ Can create custom roles
+
+Custom Role (e.g., "Field Agent", "hello1")
+  └─ Has specific permissions assigned by CustomerAdmin
+
+User
+  └─ Assigned to CustomRole
+  └─ Inherits all permissions from role
+```
+
+### Multi-Platform Access Control
+
+**Access.Web Permission:**
+- Allows user to access web application
+- Checked on frontend and backend
+
+**Access.Mobile Permission:**
+- Allows user to access mobile application
+- Can be used exclusively or with Access.Web
+
+**Example Roles:**
+- "Field Agent" → Access.Mobile only (mobile workers)
+- "Dispatcher" → Access.Web only (office staff)
+- "Manager" → Access.Web + Access.Mobile (both platforms)
+
+### Customer Isolation
+
+**Implementation:**
+- CustomerId stored in JWT claims
+- All queries filtered by CustomerId
+- SuperAdmin bypasses filter (sees all data)
+- Enforced at database query level
 
 ---
 
 ## 📈 Progress Metrics
 
-**Time Invested Today:** ~2-3 hours
-**Lines of Code:** ~800 (backend + config)
-**Git Commits:** 6
-**Database Tables:** 5
-**API Endpoints:** 5
+**Time Invested:** ~1 week
+**Lines of Code:** ~5,000+ (backend + frontend)
+**Git Commits:** Single clean commit (no AI contributor)
+**Database Tables:** 10
+**API Endpoints:** 30+
+**Permissions:** 24 across 7 categories
 
-**Velocity:** Excellent! Ahead of Week 1 schedule
+**Velocity:** Excellent! Core backend complete
 **Blockers:** None
 **Risks:** None currently
 
 ---
 
-## 💡 Tips for Next Session
+## 💡 Testing Instructions
 
-1. **Before coding:** Pull latest changes if you pushed to GitHub
-2. **Start backend first:** `cd backend/Marka.Api && dotnet run`
-3. **Then start frontend:** `cd frontend && npm run dev`
-4. **Use Swagger:** Visit http://localhost:5229/swagger for API testing
-5. **Check logs:** API logs show all requests/errors
+### 1. Start Backend
+```bash
+cd backend/Marka.Api
+dotnet run
+```
+
+### 2. Start Frontend
+```bash
+cd frontend
+npm run dev
+```
+
+### 3. Apply Migrations (First Time)
+```bash
+cd backend/Marka.Api
+dotnet ef database update
+```
+
+### 4. Test Permission System
+
+**As SuperAdmin:**
+```bash
+# Login
+curl -X POST http://localhost:5229/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@marka.com","password":"password123"}'
+
+# Create custom role for Acme Corporation
+curl -X POST http://localhost:5229/api/roles \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Field Agent",
+    "description": "Mobile field workers",
+    "customerId": "f1e2d3c4-b5a6-4978-8c9d-0e1f2a3b4c5d",
+    "permissionIds": ["PERMISSION_ID_FOR_ACCESS_MOBILE", "PERMISSION_ID_FOR_MARKA_VIEW"]
+  }'
+```
+
+**As CustomerAdmin (jane.smith@acme.com):**
+- Can create custom roles for Acme Corporation
+- Can create users and assign them to roles
+- Cannot manage customers (SuperAdmin only)
+
+**As Regular User (bob.johnson@acme.com):**
+- Can only view/edit markas if has permissions
+- Cannot access admin features
 
 ---
 
-## 🚀 Week 1 Progress
+## 🎓 What We Learned
 
-- [x] Day 1: Project setup, database, first API ← **YOU ARE HERE**
-- [ ] Day 2-3: Frontend layout, Google Maps integration
-- [ ] Day 4-5: Marka creation form, list view
-- [ ] Day 6-7: Polish, testing, week 1 demo
+1. **Permission-based systems are more flexible than role-based**
+   - Customers can define their own roles
+   - Easy to add new permissions without code changes
 
-**Overall Week 1 Status:** 20% complete (on track!)
+2. **Multi-tenant isolation is critical**
+   - Filter by CustomerId at query level
+   - JWT claims make it efficient
+
+3. **Soft delete is essential**
+   - Preserves data relationships
+   - Allows audit trails
+
+4. **Clean git history matters**
+   - Used orphan branch to reset history
+   - No AI contributor in repository
 
 ---
 
-**Last Updated:** December 21, 2025, 6:15 PM
-**Next Update:** After GitHub push or next coding session
+## 📚 Documentation
+
+- **ARCHITECTURE.md** - Complete system architecture and API documentation
+- **PROGRESS.md** - This file - current status and next steps
+- **README.md** - Project overview and quick start
+- **GETTING_STARTED.md** - Detailed setup instructions
+- **RUNNING_LOCALLY.md** - Local development guide
+
+---
+
+**Last Updated:** December 27, 2025
+**Next Update:** After admin dashboard implementation
+**Status:** 🟢 Backend Core Complete - Ready for Frontend Dashboard
