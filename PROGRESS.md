@@ -110,6 +110,31 @@
 - DELETE /api/markas/{id} - Soft delete marka
 - **All endpoints protected with permission checks**
 
+#### MarkaContextsController **NEW!**
+- GET /api/markacontexts - List marka types/contexts (filtered by customer)
+- GET /api/markacontexts/{id} - Get context details with attributes
+- POST /api/markacontexts - Create new marka type
+- PUT /api/markacontexts/{id} - Update marka type
+- DELETE /api/markacontexts/{id} - Soft delete marka type
+- POST /api/markacontexts/{id}/attributes - Link attribute to context
+- DELETE /api/markacontexts/{id}/attributes/{attributeId} - Unlink attribute
+
+#### AttributeSetsController **NEW!**
+- GET /api/attributesets - List attribute sets (filtered by customer)
+- GET /api/attributesets/{id} - Get set details with attributes
+- POST /api/attributesets - Create new attribute set
+- PUT /api/attributesets/{id} - Update attribute set
+- DELETE /api/attributesets/{id} - Soft delete attribute set
+- POST /api/attributesets/{id}/attributes - Add attribute to set
+- DELETE /api/attributesets/{id}/attributes/{attributeId} - Remove attribute from set
+
+#### AttributesController **NEW!**
+- GET /api/attributes - List attributes (filtered by customer)
+- GET /api/attributes/{id} - Get attribute details
+- POST /api/attributes - Create new attribute
+- PUT /api/attributes/{id} - Update attribute
+- DELETE /api/attributes/{id} - Soft delete attribute
+
 ### Permission Enforcement
 - [x] **PermissionService** - Checks user permissions from custom roles
 - [x] **RequirePermission attribute** - Controller-level permission enforcement
@@ -213,7 +238,10 @@ marka/
 │       │   ├── UsersController.cs ✓
 │       │   ├── RolesController.cs ✓
 │       │   ├── PermissionsController.cs ✓
-│       │   └── MarkasController.cs ✓
+│       │   ├── MarkasController.cs ✓
+│       │   ├── MarkaContextsController.cs ✓ **NEW!**
+│       │   ├── AttributeSetsController.cs ✓ **NEW!**
+│       │   └── AttributesController.cs ✓ **NEW!**
 │       ├── Data/
 │       │   ├── AppDbContext.cs ✓
 │       │   ├── SeedData.cs ✓
@@ -274,28 +302,18 @@ marka/
 
 ## 🎯 Next Steps
 
-### Phase 0: MarkaContext & AttributeSet Controllers **IMMEDIATE**
-**Priority:** Critical | **Effort:** 1-2 hours
-**Status:** Models created, need API endpoints
+### ~~Phase 0: MarkaContext & AttributeSet Controllers~~ ✅ COMPLETED!
+**Status:** ✅ All API endpoints implemented and tested
 
-1. **MarkaContexts Controller**
-   - CRUD operations for marka types/contexts
-   - Customer isolation (users only see their customer's contexts)
-   - Permission checks (Context.View, Context.Create, etc.)
-   - Link/unlink attributes to contexts
+**What was completed:**
+- ✅ MarkaContextsController - Full CRUD + attribute linking
+- ✅ AttributeSetsController - Full CRUD + attribute management
+- ✅ AttributesController - Enhanced CRUD with new fields
+- ✅ Customer isolation on all endpoints
+- ✅ Icon support in MarkaContext
+- ✅ Build successful with no errors
 
-2. **AttributeSets Controller**
-   - CRUD operations for attribute sets
-   - Customer isolation
-   - Add/remove attributes from sets
-   - Apply sets to contexts
-
-3. **Attributes Controller** (Enhanced)
-   - Update existing attributes CRUD
-   - Support for new fields (DefaultValue, ReadOnly, Persist)
-   - Customer isolation
-
-### Phase 1: Complete Admin Dashboard (Frontend)
+### Phase 1: Complete Admin Dashboard (Frontend) **NEXT UP**
 **Priority:** High | **Effort:** 2-3 days
 
 1. **Admin Dashboard Layout**
