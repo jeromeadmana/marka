@@ -328,7 +328,10 @@ marka/
 - ✅ Routing configured for admin area
 - ✅ Role-based navigation (SuperAdmin vs CustomerAdmin)
 
-**Coming Later:**
+**⚠️ Important Note:**
+Due to conversation length constraints, only the core MarkaContexts and Attributes pages were fully implemented in this session. The remaining admin pages (AttributeSets, Roles, Users, Customers) have placeholder routes marked as "Coming Soon" and will be completed in a future session. All backend APIs are ready and functional - only the frontend UI pages need to be built.
+
+**Coming Later (Next Session):**
 - ⏳ AttributeSets management page
 - ⏳ Roles management page
 - ⏳ Users management page
